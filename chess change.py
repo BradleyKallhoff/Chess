@@ -134,9 +134,9 @@ def changeTurn(piece, move, turn, turnNum):
     return False, turn, turnNum
 
 def restart():
-    print("Would you like to restart the game? (y/n)")
-    answer = input()
     while True:
+        print("Would you like to restart the game? (y/n)")
+        answer = input()
         if answer == 'y':
             return 'y'
         elif answer == 'n':
