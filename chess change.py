@@ -49,6 +49,120 @@ def printBoard(board):
     print(r'| |    a      b       c       d       e       f        g       h   | |///////|')
     print(r'------------------------------------------------------------------------------')
 
+def game():
+    t = 'W'
+    tN = 1
+    print("It is White's turn.")
+    while True:
+        p = ''
+        m = ''
+        
+        p = pickPiece(t)
+        if p == 'restart':
+            return True
+    
+        works, m = pickMove(t, p)
+        
+        if works == 'y':
+            r, t, tN = changeTurn(p, m, t, tN)
+            if r == True:
+                return True
+
+def pickPiece(turn):
+    while True:
+            print("Which piece would you like to move: ", end="")
+            piece = input()
+            if piece == 'exit':
+                exit()
+            elif piece == 'restart':
+                return piece
+            elif piece in spaces:
+                attempt[piece] = spaces[piece]
+                if turn == spaces[piece][0]:
+                    return piece
+                else:
+                    print("Pick your own piece.")
+
+def pickMove(turn, piece):
+    while piece != 'restart':
+        print("Where would you like to move it: ", end="")
+        move = input()
+        if move in spaces:
+            attempt[move] = attempt[piece]
+            attempt[piece] = '  '
+            if turn == spaces[move][0]:
+                print("You can't move ontop of your own piece.")
+                return 'n', move
+            elif check(attempt, isKing(turn)) == False:
+                if chessPiece(spaces, piece, move) == True:
+                    return 'y', move
+                else:
+                    return 'n', move
+            elif check(attempt, isKing(turn)) == True:
+                print("That move would put you in check.")
+                return 'n', move
+            else:
+                return 'n', move
+        
+
+def changeTurn(piece, move, turn, turnNum):
+    spaces[move] = attempt[move]
+    spaces[piece] = attempt[piece]
+    printBoard(spaces)
+    if spaces[move][1] == 'P':
+        pawnSwap(move)
+            
+    if turn == 'W':
+        moveList.setdefault(turnNum, [[piece, move]])
+        turn = 'B'
+    else:
+        moveList[turnNum].append([piece, move])
+        turnNum += 1
+        turn = 'W'
+
+    if check(spaces, isKing(turn)) == True:
+        if checkMate(turn, isKing(turn)) == True:
+            print("Checkmate.")
+            return True, turn, turnNum
+        else:
+            print("Check.")
+
+    if turn == 'W':
+        print("It is White's turn.")
+    else:
+        print("It is Black's turn.")
+    print(moveList)
+    return False, turn, turnNum
+
+def restart():
+    print("Would you like to restart the game? (y/n)")
+    answer = input()
+    while True:
+        if answer == 'y':
+            return 'y'
+        elif answer == 'n':
+            print("Would you like to exit? (y/n)")
+            done = input()
+            if done == 'y':
+                return 'n'
+
+def left(place):
+    return (chr(ord(place[0]) - 1) + place[1])
+def upLeft(place):
+    return (chr(ord(place[0]) - 1) + str(int(place[1]) + 1))
+def up(place):
+    return place[0] + str((int(place[1]) + 1))
+def upRight(place):
+    return (chr(ord(place[0]) + 1) + str(int(place[1]) + 1))
+def right(place):
+    return (chr(ord(place[0]) + 1) + place[1])
+def downLeft(place):
+    return (chr(ord(place[0]) - 1) + str(int(place[1]) - 1))
+def down(place):
+    return place[0] + str((int(place[1]) - 1))
+def downRight(place):
+    return (chr(ord(place[0]) + 1) + str(int(place[1]) - 1))
+
 def chessPiece(n, a, b):
     if spaces[a][1] == 'P':
         return pawn(n, a, b)
@@ -455,122 +569,8 @@ def checkMate(side, king):
                         attempt[k] = spaces[k]
         return True
 
-def left(place):
-    return (chr(ord(place[0]) - 1) + place[1])
-def upLeft(place):
-    return (chr(ord(place[0]) - 1) + str(int(place[1]) + 1))
-def up(place):
-    return place[0] + str((int(place[1]) + 1))
-def upRight(place):
-    return (chr(ord(place[0]) + 1) + str(int(place[1]) + 1))
-def right(place):
-    return (chr(ord(place[0]) + 1) + place[1])
-def downLeft(place):
-    return (chr(ord(place[0]) - 1) + str(int(place[1]) - 1))
-def down(place):
-    return place[0] + str((int(place[1]) - 1))
-def downRight(place):
-    return (chr(ord(place[0]) + 1) + str(int(place[1]) - 1))
 
-def pickPiece(turn):
-    while True:
-            print("Which piece would you like to move: ", end="")
-            piece = input()
-            if piece == 'exit':
-                exit()
-            elif piece == 'restart':
-                return piece
-            elif piece in spaces:
-                attempt[piece] = spaces[piece]
-                if turn == spaces[piece][0]:
-                    return piece
-                else:
-                    print("Pick your own piece.")
-
-def pickMove(turn, piece):
-    while piece != 'restart':
-        print("Where would you like to move it: ", end="")
-        move = input()
-        if move in spaces:
-            attempt[move] = attempt[piece]
-            attempt[piece] = '  '
-            if turn == spaces[move][0]:
-                print("You can't move ontop of your own piece.")
-                return 'n', move
-            elif check(attempt, isKing(turn)) == False:
-                if chessPiece(spaces, piece, move) == True:
-                    return 'y', move
-                else:
-                    return 'n', move
-            elif check(attempt, isKing(turn)) == True:
-                print("That move would put you in check.")
-                return 'n', move
-            else:
-                return 'n', move
-        
-
-def changeTurn(piece, move, turn, turnNum):
-    spaces[move] = attempt[move]
-    spaces[piece] = attempt[piece]
-    printBoard(spaces)
-    if spaces[move][1] == 'P':
-        pawnSwap(move)
-            
-    if turn == 'W':
-        moveList.setdefault(turnNum, [[piece, move]])
-        turn = 'B'
-    else:
-        moveList[turnNum].append([piece, move])
-        turnNum += 1
-        turn = 'W'
-
-    if check(spaces, isKing(turn)) == True:
-        if checkMate(turn, isKing(turn)) == True:
-            print("Checkmate.")
-            return True, turn, turnNum
-        else:
-            print("Check.")
-
-    if turn == 'W':
-        print("It is White's turn.")
-    else:
-        print("It is Black's turn.")
-    print(moveList)
-    return False, turn, turnNum
-
-def restart():
-    print("Would you like to restart the game? (y/n)")
-    answer = input()
-    while True:
-        if answer == 'y':
-            return 'y'
-        elif answer == 'n':
-            print("Would you like to exit? (y/n)")
-            done = input()
-            if done == 'y':
-                return 'n'
-
-def game():
-    t = 'W'
-    tN = 1
-    print("It is White's turn.")
-    while True:
-        p = ''
-        m = ''
-        
-        p = pickPiece(t)
-        if p == 'restart':
-            return True
-    
-        works, m = pickMove(t, p)
-        
-        if works == 'y':
-            r, t, tN = changeTurn(p, m, t, tN)
-            if r == True:
-                return True
-
-
-
+# Running code
 
 pawnSwapPieces = ('R', 'N', 'B', 'Q')
 play = 'y'
