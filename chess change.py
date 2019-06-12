@@ -131,7 +131,6 @@ def changeTurn(piece, move, turn, turnNum):
         print("It is White's turn.")
     else:
         print("It is Black's turn.")
-    print(moveList)
     return False, turn, turnNum
 
 def restart():
