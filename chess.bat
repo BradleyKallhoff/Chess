@@ -1,0 +1,1 @@
+@py.exe "C:\Users\bradk\AppData\Local\Programs\Python\Python37\chess.py"
