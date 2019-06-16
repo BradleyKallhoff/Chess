@@ -1,5 +1,7 @@
 #! python3
 
+# Checking success
+
 import re, sys, os
 from copy import copy
 
