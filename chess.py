@@ -67,6 +67,9 @@ def game():
             r, t, tN = changeTurn(p, m, t, tN)
             if r == True:
                 return True
+        else:
+            attempt[p] = spaces[p]
+            attempt[m] = spaces[m]
 
 def pickPiece(turn):
     while True:
@@ -472,17 +475,17 @@ def tryCastle(begin, dest):
 
 def castle(begin, dest):
     theKing = spaces[begin]
-    while attempt[dest] != spaces[begin]:
+    while dest != begin:
         if check(attempt, begin) == True:
             print("King is in check, you may not castle.")
             return False
         elif dest[0] == 'c':
             attempt[begin] = '  '
-            begin == left(begin)
+            begin = left(begin)
             attempt[begin] = theKing
         elif dest[0] == 'g':
             attempt[begin] = '  '
-            begin == right(begin)
+            begin = right(begin)
             attempt[begin] = theKing
         else:
             print("Something done fucked up...")
